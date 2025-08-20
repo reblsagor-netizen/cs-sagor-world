@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS SAGOR World</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="img/logo.png">
+<style>
+    body { margin:0; font-family: Arial, sans-serif; background:#242121; color:#fff; }
+    header { background:#460606; padding: 10px 20px; display:flex; flex-direction: column; align-items: center; }
+    .header-top { width:100%; overflow: hidden; display: inline-block; align-items:center; justify-content:flex-start; }
+    .logocus{ float: left; width: 40%; display: flex;}
+    ul li{ list-style: none;}
+    .logo { height:50px; margin-right:10px; margin-top: 5px;}
+    header h1 { margin-top: 15px; font-size:24px; }
+    .search-bar { margin:10px auto; text-align:left; width: 60%; float: right;}
+    .search-bar input { padding:8px; width:100%; max-width: 350px; border-radius:4px; border:none; }
+    nav { margin-top:10px; text-align:center; width: 100%; float: left;}
+    nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; cursor:pointer; }
+    nav a.active { color:#f39c12; }
+    .container { padding:20px; display:flex; flex-wrap:wrap; gap:20px; }
+
+    .movies-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:15px; flex-shrink:0; }
+    .movie-card { background:#000000; border-radius:8px; overflow:hidden; transition: transform 0.2s; cursor:pointer; }
+    .movie-card:hover { transform: scale(1.05); }
+    .movie-card img { width:100%; height:270px; object-fit:cover; }
+    .movie-card h3 { margin:10px; font-size:16px; }
+    .movie-card p { margin:0 10px 10px; font-size:14px; color:#aaa; }
+
+    /* Episode section side-by-side */
+    .movie-with-episodes { 
+        display: flex; 
+        align-items: flex-start; 
+        gap: 20px; 
+        flex-wrap: wrap;
+    }
+    .episode-container {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        max-width: 600px;
+        padding-bottom: 5px;
+        flex-wrap: wrap;
+    }
+    .episode-card {
+        flex: 0 0 auto;
+        background:#a200ff; 
+        border-radius:6px; 
+        padding:10px; 
+        display:flex; 
+        flex-direction:column; 
+        align-items:center; 
+        justify-content:center; 
+        width:100px; 
+        height:100px; 
+        font-size:14px; 
+        cursor:pointer; 
+        text-align:center; 
+        transition: transform 0.2s; 
+    }
+    .episode-card:hover { transform: scale(1.05); }
+    .watch-btn { margin-top:5px; padding:3px 6px; background:#f39c12; color:#111; border:none; border-radius:4px; cursor:pointer; font-size:12px; }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <ul>
+            <li>
+                <div class="logocus">
+                    <a href="#" onclick="window.location.reload(); return false;">
+                        <img src="img/logo.png" alt="CS SAGOR World" class="logo">
+                    </a>
+                    <h1>CS SAGOR World</h1>
+                </div>
+            </li>
+            <li>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search movies or shows...">
+                </div>
+            </li>
+            <nav>
+                <a class="active" data-category="Home">Home</a>
+                <a data-category="All">All</a>
+                <a data-category="Movies">Movies</a>
+                <a data-category="TV Shows">TV Shows</a>
+                <a data-category="Animation">Animation</a>
+                <a data-category="Best Dramas">Best Dramas</a>
+            </nav>
+        </ul>
+    </div>
+</header>
+
+<div class="container" id="moviesContainer">
+</div>
+
+<script>
+const movies = [
+    {title:"Rattan[Hindi]", category:"Best Dramas", description:"Rattan Sundari Drama...", image:"img/Rattan.jpg", episodes:[
+        {title:"Trailer", videoUrl:"Rattan trailer.mp4"},
+        {title:"Episode 1", videoUrl:"videos/Rattan/ep 1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/Rattan/ep 2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/Rattan/ep 3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/Rattan/ep 4.mp4"},
+        {title:"Episode 5", videoUrl:"videos/Rattan/ep 5.mp4"}
+    ]},
+    {title:"Love in Pavilion", category:"TV Shows", description:"Love in Pavilion Ep 1...", image:"img/Love in Pavilion.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Love in pavilion/Love in Pavilion Ep 1.mp4"}
+    ]},
+    {title:"Dance of the sky empire[Hindi]", category:"TV Shows", description:"Dance of the sky...", image:"img/Dance of the sky empire.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Dance of the sky empire/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/Dance of the sky empire/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/Dance of the sky empire/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/Dance of the sky empire/ep4.mp4"},
+        {title:"Episode 5", videoUrl:"videos/Dance of the sky empire/ep5.mp4"},
+        {title:"Episode 6", videoUrl:"videos/Dance of the sky empire/ep6.mp4"},
+        {title:"Episode 7", videoUrl:"videos/Dance of the sky empire/ep7.mp4"},
+        {title:"Episode 8", videoUrl:"videos/Dance of the sky empire/ep8.mp4"},
+        {title:"Episode 9", videoUrl:"videos/Dance of the sky empire/ep9.mp4"},
+        {title:"Episode 10", videoUrl:"videos/Dance of the sky empire/ep10.mp4"}
+    ]},
+    {title:"Wednesday[Hindi]", category:"TV Shows", description:"Wednesday Season 2...", image:"img/Wednesday.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Wednesday/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/Wednesday/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/Wednesday/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/Wednesday/ep 4.mp4"}
+    ]},
+    {title:"How to Train Your Dragon [Hindi]", category:"Movies", description:"How to Train Your Dragon", image:"img/How to Train Your Dragon.jpg", episodes:[
+        {title:"Full Movie", videoUrl:"videos/How to Train Your Dragon [Hindi].mp4"},
+    ]},
+    {title:"Aladdin [Hindi]", category:"Movies", description:"Aladdin [Hindi]", image:"img/Aladdin.png", episodes:[
+        {title:"Full Movie", videoUrl:"videos/Aladdin [Hindi].mp4"},
+    ]},
+    {title:"Gods of Egypt [Hindi]", category:"Movies", description:"Gods of Egypt [Hindi]", image:"img/Gods of Egypt.jpg", episodes:[
+        {title:"Full Movie", videoUrl:"videos/Gods of Egypt [Hindi].mp4"},
+    ]},
+    {title:"Re Zero:Starting Life in Another World", category:"Animation", description:"Re Zero Season 1[Hindi]", image:"img/Re Zero.jpg", episodes:[
+        {title:"S-1,Episode 1", videoUrl:"videos/Re Zero, Starting Life in Another World/S1,ep1.mp4"},
+        {title:"S-1,Episode 2", videoUrl:"videos/Re Zero, Starting Life in Another World/S1,ep2.mp4"},
+        {title:"S-1,Episode 3", videoUrl:"videos/Re Zero, Starting Life in Another World/S1,ep3.mp4"},
+        {title:"S-1,Episode 4", videoUrl:"videos/Re Zero, Starting Life in Another World/S1,ep4.mp4"},
+        {title:"S-1,Episode 5", videoUrl:"videos/Re Zero, Starting Life in Another World/S1,ep5.mp4"}
+    ]},
+    {title:"I Parry Everythin[Hindi]", category:"Animation", description:"I Parry Everythin Season 1", image:"img/I Parry Everythin.jpg", episodes:[
+        {title:"S-1,Episode 1", videoUrl:"videos/I Parry Everythin/ep1.mp4"},
+        {title:"S-1,Episode 2", videoUrl:"videos/I Parry Everythin/ep2.mp4"},
+        {title:"S-1,Episode 3", videoUrl:"videos/I Parry Everythin/ep3.mp4"},
+        {title:"S-1,Episode 4", videoUrl:"videos/I Parry Everythin/ep4.mp4"},
+        {title:"S-1,Episode 5", videoUrl:"videos/I Parry Everythin/ep5.mp4"}
+    ]},
+    {title:"Moonlit Reunion", category:"TV Shows", description:"Moonlit Reunion", image:"img/Moonlit Reunion.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Moonlit Reunion/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"Moonlit Reunion/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"Moonlit Reunion/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"Moonlit Reunion/ep4.mp4"},
+        {title:"Episode 5", videoUrl:"Moonlit Reunion/ep5.mp4"},
+        {title:"Episode 6", videoUrl:"Moonlit Reunion/ep6.mp4"}
+    ]},
+    {title:"Hidden Love[Hindi]", category:"TV Shows", description:"Hidden Love", image:"img/Hidden Love.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Hidden Love/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"Hidden Love/ep2.mp4"}
+    ]},
+    {title:"Reunion as First Sight", category:"TV Shows", description:"Reunion as First Sight", image:"img/Reunion as First Sight.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Reunion as First Sight/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/Reunion as First Sight/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/Reunion as First Sight/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/Reunion as First Sight/ep4.mp4"},
+        {title:"Episode 5", videoUrl:"videos/Reunion as First Sight/ep5.mp4"},
+        {title:"Episode 6", videoUrl:"videos/Reunion as First Sight/ep6.mp4"},
+        {title:"Episode 7", videoUrl:"videos/Reunion as First Sight/ep7.mp4"},
+        {title:"Episode 8", videoUrl:"videos/Reunion as First Sight/ep8.mp4"},
+        {title:"Episode 9", videoUrl:"videos/Reunion as First Sight/ep9.mp4"},
+        {title:"Episode 10", videoUrl:"videos/Reunion as First Sight/ep10.mp4"}
+    ]},
+     {title:"The Immortal Ascension", category:"TV Shows", description:"The Immortal Ascension", image:"img/The Immortal Ascension.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/The Immortal Ascension/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/The Immortal Ascension/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/The Immortal Ascension/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/The Immortal Ascension/ep4.mp4"},
+        {title:"Episode 5", videoUrl:"videos/The Immortal Ascension/ep5.mp4"},
+        {title:"Episode 6", videoUrl:"videos/The Immortal Ascension/ep6.mp4"},
+        {title:"Episode 7", videoUrl:"videos/The Immortal Ascension/ep7.mp4"},
+        {title:"Episode 8", videoUrl:"videos/The Immortal Ascension/ep8.mp4"},
+        {title:"Episode 9", videoUrl:"videos/The Immortal Ascension/ep9.mp4"},
+        {title:"Episode 10", videoUrl:"videos/The Immortal Ascension/ep10.mp4"}
+    ]},
+    {title:"Snow Eagle Lord", category:"TV Shows", description:"Snow Eagle Lord", image:"img/Snow Eagle Lord.jpg", episodes:[
+        {title:"Episode 1", videoUrl:"videos/Snow Eagle Lord/ep1.mp4"},
+        {title:"Episode 2", videoUrl:"videos/Snow Eagle Lord/ep2.mp4"},
+        {title:"Episode 3", videoUrl:"videos/Snow Eagle Lord/ep3.mp4"},
+        {title:"Episode 4", videoUrl:"videos/Snow Eagle Lord/ep4.mp4"},
+        {title:"Episode 5", videoUrl:"videos/Snow Eagle Lord/ep5.mp4"},
+        {title:"Episode 6", videoUrl:"videos/Snow Eagle Lord/ep6.mp4"},
+        {title:"Episode 7", videoUrl:"videos/Snow Eagle Lord/ep7.mp4"},
+        {title:"Episode 8", videoUrl:"videos/Snow Eagle Lord/ep8.mp4"},
+        {title:"Episode 9", videoUrl:"videos/Snow Eagle Lord/ep9.mp4"},
+        {title:"Episode 10", videoUrl:"videos/Snow Eagle Lord/ep10.mp4"}
+    ]},
+];
+
+let currentlyOpenEpisodeSection = null;
+
+// Display movies with their episodes side-by-side
+function displayMovies(filterCategory = "Home", searchTerm = "") {
+    const container = document.getElementById('moviesContainer');
+    container.innerHTML = "";
+
+    movies.filter(m => 
+        (filterCategory === "Home" || filterCategory === "All" || m.category === filterCategory) &&
+        m.title.toLowerCase().includes(searchTerm.toLowerCase())
+    ).forEach(movie => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'movie-with-episodes';
+
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.innerHTML = `
+            <img src="${movie.image}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>${movie.description}</p>
+        `;
+
+        const epSection = document.createElement('div');
+        epSection.className = 'episode-container';
+        epSection.style.display = "none";  // hide initially
+
+        movie.episodes.forEach(ep => {
+            const epCard = document.createElement('div');
+            epCard.className = 'episode-card';
+            epCard.innerHTML = `
+                <div>${ep.title}</div>
+                <button class="watch-btn">Watch Now</button>
+            `;
+            epCard.querySelector('.watch-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent toggle when clicking button
+                playVideo(ep.videoUrl);
+            });
+            epSection.appendChild(epCard);
+        });
+
+        card.addEventListener('click', () => {
+            if (currentlyOpenEpisodeSection && currentlyOpenEpisodeSection !== epSection) {
+                currentlyOpenEpisodeSection.style.display = "none";
+            }
+            epSection.style.display = epSection.style.display === "none" ? "flex" : "none";
+            currentlyOpenEpisodeSection = epSection.style.display === "flex" ? epSection : null;
+        });
+
+        wrapper.appendChild(card);
+        wrapper.appendChild(epSection);
+        container.appendChild(wrapper);
+    });
+}
+
+function playVideo(url) {
+    const videoWindow = window.open("", "VideoPlayer", "width=800,height=450");
+    videoWindow.document.write(`
+        <video src="${url}" controls autoplay style="width:100%;height:100%;"></video>
+    `);
+}
+
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        displayMovies(link.dataset.category, document.getElementById('searchInput').value);
+    });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+    const activeCategory = document.querySelector('nav a.active').dataset.category;
+    displayMovies(activeCategory, e.target.value);
+});
+
+// Initial load
+displayMovies();
+</script>
+
+</body>
+</html>
